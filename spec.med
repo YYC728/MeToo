@@ -1,0 +1,262 @@
+Absolutely! Here’s a comprehensive, developer-ready specification document based on everything we discussed. I’ve structured it clearly for easy handoff to your development team:
+
+---
+
+# University Meal Exchange & #MeToo Story Sharing App
+
+**Specification Document**
+
+---
+
+## 1. Overview
+
+This app serves university students by providing two independent but coexisting features under a unified platform:
+
+* **Meal Exchange:** Students can post, browse, and exchange batch-cooked meals.
+* **#MeToo Story Sharing:** Students can share their experiences related to harassment and support each other via anonymous stories and discussion threads.
+
+---
+
+## 2. User Accounts & Authentication
+
+* **Single Unified Account** for both features.
+* Registration requires:
+
+  * Verification via university email (to confirm affiliation).
+  * Users may choose a **stage name** instead of real name.
+* University affiliation visibility is **optional** (users decide whether to disclose it).
+* Users can toggle anonymity in the #MeToo section when posting or commenting.
+
+---
+
+## 3. Meal Exchange Feature
+
+### 3.1 Posting Meals
+
+* Meals can be scheduled for availability from **today up to 7 days ahead**.
+* Required meal details:
+
+  * Dish name
+  * Dietary group (predefined options, e.g., vegan, halal, gluten-free)
+  * Portion size (e.g., 1 serve, 2 serves)
+  * Pickup location (based on GPS coordinates)
+  * Pickup time window
+  * Allergen information
+  * Optional additional notes
+
+### 3.2 Meal Discovery
+
+* Meals are shown as markers on a **map interface** using GPS locations.
+* Users can filter and search by combining:
+
+  * Dietary groups
+  * Portion sizes
+  * Location radius or map area
+  * Time windows
+  * Allergens
+* Freeform search text (optional).
+
+### 3.3 Interaction
+
+* Users can **freely message** any other user within the app (not limited to meal-related contacts).
+* Notifications for messages, new meals near user location, etc., can be toggled on/off per user preference.
+* No rating or review system.
+
+---
+
+## 4. #MeToo Story Sharing Feature
+
+### 4.1 Story Posting
+
+* Stories can be:
+
+  * Text only, or
+  * Include media uploads (images, audio, video).
+* Privacy controls for each story:
+
+  * **Public:** anyone (inside or outside app) can view/share.
+  * **Restricted:** only logged-in app users can view.
+  * **Anonymous:** identity hidden but shareable externally.
+* Users can add **tags** to their stories from predefined or custom tag categories.
+
+### 4.2 Story Interaction
+
+* Anonymous **comment/support threads** attached to each story, visible only to the original poster and commenters.
+* Comments can be enabled/disabled by the story poster.
+* Supportive reactions and likes allowed.
+* Sharing stories outside the app is enabled.
+
+### 4.3 Community Help
+
+* The anonymous comment section serves as a **peer-to-peer anonymous support group**.
+* Users can block or disable comments for safety.
+* In-app notifications for comments and reactions, toggleable by user.
+
+---
+
+## 5. Messaging & Safety Features
+
+* Free messaging across users.
+* Users can block others and disable comments for safety.
+* The #MeToo section prioritized as a **safe space**.
+* Reporting tools for inappropriate content/messages are community-driven, no admin dashboard.
+
+---
+
+## 6. Notifications
+
+* Users can toggle notifications for:
+
+  * New messages
+  * New meal listings nearby
+  * New comments or reactions on #MeToo stories
+* Notification preferences fully user-controlled.
+
+---
+
+## 7. Search & Filtering
+
+* Meals: multi-filter search (diet, portions, location, allergens, time).
+* \#MeToo stories: search by keywords and filter by tag categories.
+
+---
+
+## 8. Technical Architecture
+
+### 8.1 Frontend
+
+* Mobile app (iOS and Android) or responsive web app.
+* Core UI components:
+
+  * Map with geolocation and markers for meals.
+  * Post creation forms for meals and #MeToo stories.
+  * Messaging interface.
+  * Profile and settings screens (privacy, notifications).
+  * Story view with comment/support thread.
+
+### 8.2 Backend
+
+* RESTful or GraphQL API server.
+* User authentication with email verification.
+* Secure storage of user data, media uploads, and posts.
+* Real-time messaging and notifications (e.g., using WebSocket or push notifications).
+* Database design to separate meal posts, #MeToo stories, comments, user profiles, and settings.
+* Media handling: storage and streaming (consider cloud services like AWS S3).
+
+### 8.3 Security & Privacy
+
+* Ensure anonymity where requested (e.g., #MeToo posts and comments).
+* Data encryption in transit (HTTPS/TLS) and at rest.
+* GDPR/CCPA compliance regarding personal data.
+* Abuse prevention mechanisms: blocking, reporting, disabling comments.
+* Rate limiting and spam detection for messaging and posting.
+
+---
+
+## 9. Data Models (simplified)
+
+### User
+
+* user\_id
+* stage\_name
+* university\_email (verified)
+* disclosure\_preferences (university visibility, notifications)
+* authentication credentials
+* blocked\_users list
+
+### MealPost
+
+* post\_id
+* user\_id (owner)
+* dish\_name
+* dietary\_group(s)
+* portion\_size
+* location (GPS coordinates)
+* pickup\_time\_window
+* allergens
+* additional\_notes
+* availability\_dates
+
+### MeTooStory
+
+* story\_id
+* user\_id (owner, nullable if anonymous)
+* text\_content
+* media\_attachments (list)
+* privacy\_level (public/restricted/anonymous)
+* tags (list)
+* comment\_enabled (boolean)
+
+### Comment
+
+* comment\_id
+* story\_id
+* user\_id (nullable if anonymous)
+* text\_content
+* timestamp
+
+### Message
+
+* message\_id
+* sender\_id
+* receiver\_id
+* content
+* timestamp
+
+---
+
+## 10. Error Handling Strategies
+
+* Graceful form validation errors with clear messages.
+* Fallbacks for media upload failures (retry mechanism).
+* Connection loss handling in messaging (offline queue).
+* Map location services fallback if GPS unavailable.
+* Robust authentication error feedback.
+* User-friendly error screens for unexpected failures.
+
+---
+
+## 11. Testing Plan
+
+### Unit Testing
+
+* Validate input forms for meal posts and #MeToo stories.
+* Authentication flows and email verification.
+* Privacy toggling and anonymity enforcement logic.
+* Message sending/receiving and blocking functionality.
+* Search and filtering logic for meals and stories.
+
+### Integration Testing
+
+* End-to-end posting and discovery of meals.
+* Posting, sharing, and interacting with #MeToo stories.
+* Notifications toggle and delivery.
+* Anonymous comment/support thread visibility rules.
+
+### User Acceptance Testing (UAT)
+
+* Test anonymity options in various scenarios.
+* Verify user preference toggling (privacy, notifications).
+* Usability of map and meal listing UI.
+* Verify media uploads and sharing outside app.
+* Confirm safe space features: blocking, disabling comments, reporting.
+
+### Security Testing
+
+* Verify email verification enforcement.
+* Test data encryption in transit and storage.
+* Penetration tests for messaging and media upload.
+* Abuse scenarios: spamming, harassment prevention.
+
+---
+
+## 12. Deployment & Maintenance
+
+* Scalable cloud backend for media and user data.
+* Continuous Integration/Continuous Deployment (CI/CD) pipeline.
+* Monitoring for app uptime, errors, and abuse reports.
+* Regular backups of user data with anonymization where applicable.
+
+---
+
+If you want, I can also help with detailed user stories, API specs, or wireframes next. How would you like to proceed?
