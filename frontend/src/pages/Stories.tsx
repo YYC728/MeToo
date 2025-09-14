@@ -5,7 +5,7 @@ import {
   Box,
   Card,
   CardContent,
-  CardActions,
+  // CardActions,
   Button,
   Chip,
   TextField,
@@ -29,7 +29,7 @@ import {
 import {
   Add,
   Search,
-  Article,
+  // Article,
   MoreVert,
   Favorite,
   Comment,
@@ -55,7 +55,7 @@ interface Story {
 }
 
 const Stories: React.FC = () => {
-  const { user } = useAuth();
+  // const { user } = useAuth(); // Removed unused variable
   const [stories, setStories] = useState<Story[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
@@ -63,7 +63,7 @@ const Stories: React.FC = () => {
   const [privacyFilter, setPrivacyFilter] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedStory, setSelectedStory] = useState<Story | null>(null);
+  // const [selectedStory, setSelectedStory] = useState<Story | null>(null); // Removed unused variable
 
   useEffect(() => {
     fetchStories();

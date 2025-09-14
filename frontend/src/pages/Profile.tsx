@@ -20,8 +20,8 @@ import {
   Alert,
 } from '@mui/material';
 import {
-  Person,
-  Email,
+  // Person,
+  // Email,
   Security,
   Restaurant,
   Article,
