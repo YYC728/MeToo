@@ -63,7 +63,7 @@ const Stories: React.FC = () => {
   const [privacyFilter, setPrivacyFilter] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedStory, setSelectedStory] = useState<Story | null>(null);
+  // Removed unused selectedStory variable
 
   useEffect(() => {
     fetchStories();
