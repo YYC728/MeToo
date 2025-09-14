@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import App from './App';
+import ErrorBoundary from './components/ErrorBoundary';
 import { AuthProvider } from './contexts/AuthContext';
 import { SocketProvider } from './contexts/SocketContext';
 
@@ -33,7 +34,9 @@ root.render(
         <BrowserRouter>
           <AuthProvider>
             <SocketProvider>
-              <App />
+              <ErrorBoundary>
+                <App />
+              </ErrorBoundary>
             </SocketProvider>
           </AuthProvider>
         </BrowserRouter>
