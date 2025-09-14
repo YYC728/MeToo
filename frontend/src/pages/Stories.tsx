@@ -38,7 +38,7 @@ import {
   VisibilityOff,
   FilterList,
 } from '@mui/icons-material';
-import { useAuth } from '../contexts/AuthContext';
+ // import { useAuth } from '../contexts/AuthContext'; // Removed unused import
 
 interface Story {
   _id: string;
@@ -63,7 +63,7 @@ const Stories: React.FC = () => {
   const [privacyFilter, setPrivacyFilter] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedStory, setSelectedStory] = useState<Story | null>(null);
+  // Removed unused selectedStory variable
 
   useEffect(() => {
     fetchStories();

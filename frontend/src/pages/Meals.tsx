@@ -57,7 +57,7 @@ interface Meal {
 }
 
 const Meals: React.FC = () => {
-  // const { user } = useAuth(); // Removed unused variable
+  // Removed unused useAuth import and variable
   const [meals, setMeals] = useState<Meal[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
