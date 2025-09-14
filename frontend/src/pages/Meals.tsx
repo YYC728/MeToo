@@ -30,7 +30,7 @@ import {
   Restaurant,
   FilterList,
 } from '@mui/icons-material';
-import { useAuth } from '../contexts/AuthContext';
+// import { useAuth } from '../contexts/AuthContext';
 
 interface Meal {
   _id: string;

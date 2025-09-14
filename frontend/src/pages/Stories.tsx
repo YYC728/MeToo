@@ -63,7 +63,7 @@ const Stories: React.FC = () => {
   const [privacyFilter, setPrivacyFilter] = useState('');
   const [openDialog, setOpenDialog] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedStory, setSelectedStory] = useState<Story | null>(null);
+  // Removed unused selectedStory state to fix CI build error
 
   useEffect(() => {
     fetchStories();
@@ -138,13 +138,11 @@ const Stories: React.FC = () => {
   };
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, story: Story) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedStory(story);
+  setAnchorEl(event.currentTarget);
   };
 
   const handleMenuClose = () => {
-    setAnchorEl(null);
-    setSelectedStory(null);
+  setAnchorEl(null);
   };
 
   return (
