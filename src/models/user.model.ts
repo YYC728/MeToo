@@ -73,7 +73,7 @@ userSchema.methods.comparePassword = async function(candidatePassword: string): 
 };
 
 // Create indexes
-userSchema.index({ university_email: 1 });
+// Index already created by unique: true in schema
 userSchema.index({ stage_name: 1 });
 
 export default mongoose.model<IUser>('User', userSchema);
