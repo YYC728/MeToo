@@ -1,15 +1,33 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User, LoginCredentials, RegisterData } from '../types';
-import { authAPI } from '../services/api';
+import api from '../services/api';
+
+interface User {
+  _id: string;
+  stage_name: string;
+  university_email: string;
+  is_email_verified: boolean;
+  disclosure_preferences: {
+    university_visibility: boolean;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
 
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  login: (credentials: LoginCredentials) => Promise<void>;
-  register: (data: RegisterData) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
+  register: (userData: RegisterData) => Promise<void>;
   logout: () => void;
-  verifyEmail: (token: string) => Promise<void>;
-  resendVerification: (email: string) => Promise<void>;
+}
+
+interface RegisterData {
+  stage_name: string;
+  university_email: string;
+  password: string;
+  disclosure_preferences: {
+    university_visibility: boolean;
+  };
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -31,85 +49,64 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const initAuth = async () => {
-      const token = localStorage.getItem('token');
-      const userData = localStorage.getItem('user');
+    const token = localStorage.getItem('token');
+    if (token) {
+      // Set the token in the API headers
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       
-      if (token && userData) {
-        try {
-          setUser(JSON.parse(userData));
-        } catch (error) {
-          console.error('Error parsing user data:', error);
-          localStorage.removeItem('token');
-          localStorage.removeItem('user');
-        }
-      }
+      // Verify the token and get user data
+      verifyToken();
+    } else {
       setLoading(false);
-    };
-
-    initAuth();
+    }
   }, []);
 
-  const login = async (credentials: LoginCredentials) => {
+  const verifyToken = async () => {
     try {
-      const response = await authAPI.login(credentials);
-      const { user: userData, token } = response.data;
-      
-      if (userData && token) {
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(userData));
-        setUser(userData);
-      }
+      // You might want to add a /me endpoint to your backend to get current user
+      // For now, we'll just check if the token exists
+      const response = await api.get('/auth/me');
+      setUser(response.data.user);
     } catch (error) {
-      console.error('Login error:', error);
+      // Token is invalid, remove it
+      localStorage.removeItem('token');
+      delete api.defaults.headers.common['Authorization'];
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const login = async (email: string, password: string) => {
+    try {
+      const response = await api.post('/auth/login', {
+        university_email: email,
+        password,
+      });
+
+      const { token, user: userData } = response.data;
+      
+      // Store token and set in API headers
+      localStorage.setItem('token', token);
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      setUser(userData);
+    } catch (error: any) {
       throw error;
     }
   };
 
-  const register = async (data: RegisterData) => {
+  const register = async (userData: RegisterData) => {
     try {
-      const response = await authAPI.register(data);
-      const { user: userData, token } = response.data;
-      
-      if (userData && token) {
-        localStorage.setItem('token', token);
-        localStorage.setItem('user', JSON.stringify(userData));
-        setUser(userData);
-      }
-    } catch (error) {
-      console.error('Registration error:', error);
+      await api.post('/auth/register', userData);
+    } catch (error: any) {
       throw error;
     }
   };
 
   const logout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    delete api.defaults.headers.common['Authorization'];
     setUser(null);
-  };
-
-  const verifyEmail = async (token: string) => {
-    try {
-      const response = await authAPI.verifyEmail(token);
-      const { user: userData } = response.data;
-      
-      if (userData) {
-        localStorage.setItem('user', JSON.stringify(userData));
-        setUser(userData);
-      }
-    } catch (error) {
-      console.error('Email verification error:', error);
-      throw error;
-    }
-  };
-
-  const resendVerification = async (email: string) => {
-    try {
-      await authAPI.resendVerification(email);
-    } catch (error) {
-      console.error('Resend verification error:', error);
-      throw error;
-    }
   };
 
   const value: AuthContextType = {
@@ -118,8 +115,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     register,
     logout,
-    verifyEmail,
-    resendVerification,
   };
 
   return (
@@ -128,4 +123,3 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-

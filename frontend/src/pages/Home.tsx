@@ -2,12 +2,12 @@ import React from 'react';
 import {
   Container,
   Typography,
+  Box,
   Grid,
   Card,
   CardContent,
   CardActions,
   Button,
-  Box,
   Paper,
 } from '@mui/material';
 import {
@@ -25,30 +25,30 @@ const Home: React.FC = () => {
 
   const features = [
     {
-      icon: <Restaurant sx={{ fontSize: 40, color: '#1976d2' }} />,
+      icon: <Restaurant sx={{ fontSize: 40, color: 'primary.main' }} />,
       title: 'Meal Exchange',
-      description: 'Share and discover meals with fellow students. Find meals near you based on dietary preferences and location.',
+      description: 'Share and discover meals with fellow university students. Find food near you or offer your extra meals.',
       action: 'Browse Meals',
       path: '/meals',
     },
     {
-      icon: <Article sx={{ fontSize: 40, color: '#dc004e' }} />,
-      title: '#MeToo Stories',
-      description: 'Share your experiences and support others in a safe, anonymous environment. Build a community of understanding.',
+      icon: <Article sx={{ fontSize: 40, color: 'secondary.main' }} />,
+      title: 'Story Sharing',
+      description: 'Share your experiences in a safe, supportive environment. Connect with others who understand.',
       action: 'Read Stories',
       path: '/stories',
     },
     {
-      icon: <People sx={{ fontSize: 40, color: '#2e7d32' }} />,
+      icon: <People sx={{ fontSize: 40, color: 'success.main' }} />,
       title: 'Community',
-      description: 'Connect with other university students. Build meaningful relationships through shared experiences.',
+      description: 'Build meaningful connections with students who share similar experiences and values.',
       action: 'Join Community',
-      path: user ? '/profile' : '/register',
+      path: user ? '/meals' : '/register',
     },
     {
-      icon: <Security sx={{ fontSize: 40, color: '#ed6c02' }} />,
+      icon: <Security sx={{ fontSize: 40, color: 'warning.main' }} />,
       title: 'Safe Space',
-      description: 'Anonymous posting, user blocking, and content moderation ensure a safe environment for everyone.',
+      description: 'Privacy controls and moderation ensure a safe environment for sharing personal experiences.',
       action: 'Learn More',
       path: '/stories',
     },
@@ -68,41 +68,43 @@ const Home: React.FC = () => {
         <Container maxWidth="lg">
           <Box textAlign="center">
             <Typography variant="h2" component="h1" gutterBottom>
-              Welcome to MeToo
+              🍽️ MeToo Meal Exchange
             </Typography>
-            <Typography variant="h5" component="p" sx={{ mb: 4, opacity: 0.9 }}>
-              University Meal Exchange & Story Sharing Platform
+            <Typography variant="h5" component="h2" gutterBottom sx={{ mb: 4 }}>
+              Share Meals, Share Stories, Build Community
             </Typography>
             <Typography variant="body1" sx={{ mb: 4, maxWidth: 600, mx: 'auto' }}>
-              Connect with fellow students through meal sharing and supportive storytelling. 
-              Build a stronger university community together.
+              A safe space for university students to exchange meals and share experiences. 
+              Connect with your community through food and support.
             </Typography>
-            <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-              <Button
-                variant="contained"
-                size="large"
-                sx={{ 
-                  backgroundColor: 'white', 
-                  color: '#1976d2',
-                  '&:hover': { backgroundColor: '#f5f5f5' }
-                }}
-                onClick={() => navigate('/meals')}
-              >
-                Browse Meals
-              </Button>
-              <Button
-                variant="outlined"
-                size="large"
-                sx={{ 
-                  borderColor: 'white', 
-                  color: 'white',
-                  '&:hover': { borderColor: 'white', backgroundColor: 'rgba(255,255,255,0.1)' }
-                }}
-                onClick={() => navigate('/stories')}
-              >
-                Read Stories
-              </Button>
-            </Box>
+            {!user && (
+              <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
+                <Button
+                  variant="contained"
+                  size="large"
+                  sx={{ 
+                    bgcolor: 'white', 
+                    color: 'primary.main',
+                    '&:hover': { bgcolor: 'grey.100' }
+                  }}
+                  onClick={() => navigate('/register')}
+                >
+                  Get Started
+                </Button>
+                <Button
+                  variant="outlined"
+                  size="large"
+                  sx={{ 
+                    borderColor: 'white', 
+                    color: 'white',
+                    '&:hover': { borderColor: 'white', bgcolor: 'rgba(255,255,255,0.1)' }
+                  }}
+                  onClick={() => navigate('/login')}
+                >
+                  Login
+                </Button>
+              </Box>
+            )}
           </Box>
         </Container>
       </Paper>
@@ -110,33 +112,40 @@ const Home: React.FC = () => {
       {/* Features Section */}
       <Container maxWidth="lg" sx={{ py: 4 }}>
         <Typography variant="h3" component="h2" textAlign="center" gutterBottom>
-          Features
+          How It Works
         </Typography>
-        <Typography variant="h6" textAlign="center" color="text.secondary" sx={{ mb: 6 }}>
-          Everything you need to connect with your university community
+        <Typography variant="body1" textAlign="center" sx={{ mb: 6, color: 'text.secondary' }}>
+          Join thousands of students already using our platform
         </Typography>
 
         <Grid container spacing={4}>
           {features.map((feature, index) => (
-            <Grid item xs={12} md={6} key={index}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                <CardContent sx={{ flexGrow: 1 }}>
-                  <Box textAlign="center" mb={2}>
+            <Grid item xs={12} sm={6} md={3} key={index}>
+              <Card 
+                sx={{ 
+                  height: '100%', 
+                  display: 'flex', 
+                  flexDirection: 'column',
+                  transition: 'transform 0.2s',
+                  '&:hover': { transform: 'translateY(-4px)' }
+                }}
+              >
+                <CardContent sx={{ flexGrow: 1, textAlign: 'center' }}>
+                  <Box sx={{ mb: 2 }}>
                     {feature.icon}
                   </Box>
-                  <Typography variant="h5" component="h3" gutterBottom textAlign="center">
+                  <Typography variant="h5" component="h3" gutterBottom>
                     {feature.title}
                   </Typography>
-                  <Typography variant="body1" color="text.secondary" textAlign="center">
+                  <Typography variant="body2" color="text.secondary">
                     {feature.description}
                   </Typography>
                 </CardContent>
                 <CardActions sx={{ justifyContent: 'center', pb: 2 }}>
-                  <Button
-                    variant="contained"
+                  <Button 
+                    size="small" 
                     onClick={() => navigate(feature.path)}
-                    fullWidth
-                    sx={{ mx: 2 }}
+                    variant="outlined"
                   >
                     {feature.action}
                   </Button>
@@ -147,39 +156,39 @@ const Home: React.FC = () => {
         </Grid>
       </Container>
 
-      {/* CTA Section */}
-      {!user && (
-        <Paper sx={{ py: 6, mt: 4, backgroundColor: '#f5f5f5' }}>
-          <Container maxWidth="md">
-            <Box textAlign="center">
-              <Typography variant="h4" component="h2" gutterBottom>
-                Ready to Join Our Community?
+      {/* Stats Section */}
+      <Paper sx={{ py: 6, mt: 4, bgcolor: 'grey.50' }}>
+        <Container maxWidth="lg">
+          <Grid container spacing={4} textAlign="center">
+            <Grid item xs={12} sm={4}>
+              <Typography variant="h3" component="div" color="primary.main" gutterBottom>
+                500+
               </Typography>
-              <Typography variant="body1" color="text.secondary" sx={{ mb: 4 }}>
-                Sign up today to start sharing meals and stories with fellow students.
+              <Typography variant="h6" gutterBottom>
+                Meals Shared
               </Typography>
-              <Button
-                variant="contained"
-                size="large"
-                onClick={() => navigate('/register')}
-                sx={{ mr: 2 }}
-              >
-                Get Started
-              </Button>
-              <Button
-                variant="outlined"
-                size="large"
-                onClick={() => navigate('/login')}
-              >
-                Sign In
-              </Button>
-            </Box>
-          </Container>
-        </Paper>
-      )}
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Typography variant="h3" component="div" color="secondary.main" gutterBottom>
+                200+
+              </Typography>
+              <Typography variant="h6" gutterBottom>
+                Stories Shared
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={4}>
+              <Typography variant="h3" component="div" color="success.main" gutterBottom>
+                1000+
+              </Typography>
+              <Typography variant="h6" gutterBottom>
+                Students Connected
+              </Typography>
+            </Grid>
+          </Grid>
+        </Container>
+      </Paper>
     </Box>
   );
 };
 
 export default Home;
-

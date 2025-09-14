@@ -33,7 +33,7 @@ const emailVerificationTokenSchema = new Schema<IEmailVerificationToken>({
 });
 
 // Create indexes
-// token index already created by unique: true in schema
+// Note: token index is automatically created by unique: true in schema
 emailVerificationTokenSchema.index({ user_id: 1 });
 emailVerificationTokenSchema.index({ expires_at: 1 }, { expireAfterSeconds: 0 }); // TTL index
 

@@ -10,42 +10,34 @@ import {
   Link,
 } from '@mui/material';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { LoginCredentials } from '../types';
 
-const schema = yup.object({
-  university_email: yup
-    .string()
-    .email('Please enter a valid email address')
-    .required('Email is required'),
-  password: yup
-    .string()
-    .min(6, 'Password must be at least 6 characters')
-    .required('Password is required'),
-});
+// Simple validation without yup for now
+
+interface LoginFormData {
+  university_email: string;
+  password: string;
+}
 
 const Login: React.FC = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
-  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginCredentials>({
-    resolver: yupResolver(schema),
-  });
+  } = useForm<LoginFormData>();
 
-  const onSubmit = async (data: LoginCredentials) => {
+  const onSubmit = async (data: LoginFormData) => {
+    setLoading(true);
+    setError('');
+
     try {
-      setLoading(true);
-      setError('');
-      await login(data);
+      await login(data.university_email, data.password);
       navigate('/');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
@@ -65,70 +57,62 @@ const Login: React.FC = () => {
         }}
       >
         <Paper elevation={3} sx={{ padding: 4, width: '100%' }}>
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
+          <Box sx={{ textAlign: 'center', mb: 3 }}>
             <Typography component="h1" variant="h4" gutterBottom>
-              Sign In
+              🍽️ Welcome Back
             </Typography>
-            <Typography variant="body2" color="text.secondary" align="center" sx={{ mb: 3 }}>
-              Sign in to your MeToo account
+            <Typography variant="body1" color="text.secondary">
+              Sign in to your MeToo Meal Exchange account
             </Typography>
+          </Box>
 
-            {error && (
-              <Alert severity="error" sx={{ width: '100%', mb: 2 }}>
-                {error}
-              </Alert>
-            )}
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
 
-            <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ width: '100%' }}>
-              <TextField
-                {...register('university_email')}
-                margin="normal"
-                required
-                fullWidth
-                id="email"
-                label="University Email"
-                name="university_email"
-                autoComplete="email"
-                autoFocus
-                error={!!errors.university_email}
-                helperText={errors.university_email?.message}
-              />
-              <TextField
-                {...register('password')}
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="current-password"
-                error={!!errors.password}
-                helperText={errors.password?.message}
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2 }}
-                disabled={loading}
-              >
-                {loading ? 'Signing In...' : 'Sign In'}
-              </Button>
-              <Box textAlign="center">
-                <Typography variant="body2">
-                  Don't have an account?{' '}
-                  <Link component={RouterLink} to="/register" variant="body2">
-                    Sign up here
-                  </Link>
-                </Typography>
-              </Box>
+          <Box component="form" onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="university_email"
+              label="University Email"
+              autoComplete="email"
+              autoFocus
+              {...register('university_email')}
+              error={!!errors.university_email}
+              helperText={errors.university_email?.message}
+            />
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              {...register('password')}
+              error={!!errors.password}
+              helperText={errors.password?.message}
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+              disabled={loading}
+            >
+              {loading ? 'Signing In...' : 'Sign In'}
+            </Button>
+            <Box textAlign="center">
+              <Typography variant="body2">
+                Don't have an account?{' '}
+                <Link component={RouterLink} to="/register">
+                  Sign up here
+                </Link>
+              </Typography>
             </Box>
           </Box>
         </Paper>
@@ -138,4 +122,3 @@ const Login: React.FC = () => {
 };
 
 export default Login;
-

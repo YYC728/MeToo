@@ -1,13 +1,9 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { Message } from '../types';
 import { useAuth } from './AuthContext';
 
 interface SocketContextType {
   socket: Socket | null;
-  messages: Message[];
-  sendMessage: (receiverId: string, content: string) => void;
-  joinRoom: (room: string) => void;
   isConnected: boolean;
 }
 
@@ -27,13 +23,13 @@ interface SocketProviderProps {
 
 export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
   const [isConnected, setIsConnected] = useState(false);
   const { user } = useAuth();
 
   useEffect(() => {
     if (user) {
-      const newSocket = io(process.env.REACT_APP_SOCKET_URL || 'http://localhost:3000', {
+      // Connect to socket with authentication
+      const newSocket = io(process.env.REACT_APP_API_URL || 'https://web-production-da8f4.up.railway.app', {
         auth: {
           token: localStorage.getItem('token'),
         },
@@ -42,9 +38,6 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
       newSocket.on('connect', () => {
         console.log('Connected to server');
         setIsConnected(true);
-        
-        // Join user's personal room
-        newSocket.emit('joinRoom', user._id);
       });
 
       newSocket.on('disconnect', () => {
@@ -52,12 +45,8 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         setIsConnected(false);
       });
 
-      newSocket.on('newMessage', (message: Message) => {
-        setMessages(prev => [...prev, message]);
-      });
-
       newSocket.on('connect_error', (error) => {
-        console.error('Socket connection error:', error);
+        console.error('Connection error:', error);
         setIsConnected(false);
       });
 
@@ -67,6 +56,7 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
         newSocket.close();
       };
     } else {
+      // Disconnect if user logs out
       if (socket) {
         socket.close();
         setSocket(null);
@@ -75,26 +65,8 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     }
   }, [user]);
 
-  const sendMessage = (receiverId: string, content: string) => {
-    if (socket && isConnected) {
-      socket.emit('sendMessage', {
-        receiver_id: receiverId,
-        content,
-      });
-    }
-  };
-
-  const joinRoom = (room: string) => {
-    if (socket && isConnected) {
-      socket.emit('joinRoom', room);
-    }
-  };
-
   const value: SocketContextType = {
     socket,
-    messages,
-    sendMessage,
-    joinRoom,
     isConnected,
   };
 
@@ -104,4 +76,3 @@ export const SocketProvider: React.FC<SocketProviderProps> = ({ children }) => {
     </SocketContext.Provider>
   );
 };
-
