@@ -23,15 +23,23 @@ const Home: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [apiError, setApiError] = React.useState<string | null>(null);
+  const [apiUrl, setApiUrl] = React.useState<string | null>(null);
 
   React.useEffect(() => {
+    // Show API URL for debugging
+    setApiUrl(process.env.REACT_APP_API_URL || 'undefined');
     // Simple API health check
-    fetch(process.env.REACT_APP_API_URL + '/health')
-      .then(res => {
-        if (!res.ok) throw new Error('API not reachable');
-        return res.json();
-      })
-      .catch(() => setApiError('Unable to connect to backend API. Some features may be unavailable.'));
+    const url = (process.env.REACT_APP_API_URL || '').replace(/\/$/, '') + '/health';
+    if (url.length > 10) {
+      fetch(url)
+        .then(res => {
+          if (!res.ok) throw new Error('API not reachable');
+          return res.json();
+        })
+        .catch((err) => setApiError('Unable to connect to backend API. Some features may be unavailable. ' + err));
+    } else {
+      setApiError('REACT_APP_API_URL is not set. Please configure it in Netlify environment variables.');
+    }
   }, []);
 
   const features = [
@@ -67,6 +75,9 @@ const Home: React.FC = () => {
 
   return (
     <Box>
+      <Box sx={{ bgcolor: 'info.main', color: 'white', p: 2, mb: 2, textAlign: 'center' }}>
+        <strong>API URL:</strong> {apiUrl}
+      </Box>
       {apiError && (
         <Box sx={{ bgcolor: 'error.main', color: 'white', p: 2, mb: 2, textAlign: 'center' }}>
           {apiError}
