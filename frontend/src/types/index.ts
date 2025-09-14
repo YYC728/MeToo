@@ -126,3 +126,4 @@ export interface SocketEvents {
   joinRoom: (room: string) => void;
   newMessage: (message: Message) => void;
 }
+

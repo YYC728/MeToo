@@ -310,3 +310,4 @@ describe('PATCH /api/meals/:id/availability', () => {
       .expect(401);
   });
 });
+

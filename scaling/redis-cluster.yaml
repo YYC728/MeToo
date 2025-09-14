@@ -156,3 +156,4 @@ spec:
             --cluster-replicas 1 \
             --cluster-yes
       restartPolicy: OnFailure
+

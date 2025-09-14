@@ -229,3 +229,4 @@ export function teardown(data) {
   console.log('Performance test completed');
   console.log(`Tested with ${data.authTokens.length} authenticated users`);
 }
+

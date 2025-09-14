@@ -283,3 +283,4 @@ export const updateMealAvailability = async (req: AuthRequest, res: Response): P
     });
   }
 };
+

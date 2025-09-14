@@ -27,3 +27,4 @@ const Meals: React.FC = () => {
 };
 
 export default Meals;
+

@@ -77,3 +77,4 @@ userSchema.index({ university_email: 1 });
 userSchema.index({ stage_name: 1 });
 
 export default mongoose.model<IUser>('User', userSchema);
+

@@ -35,3 +35,4 @@ commentSchema.index({ story_id: 1, created_at: 1 });
 commentSchema.index({ user_id: 1, created_at: -1 });
 
 export default mongoose.model<IComment>('Comment', commentSchema);
+

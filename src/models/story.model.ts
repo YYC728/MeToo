@@ -74,3 +74,4 @@ meTooStorySchema.pre('save', function(next) {
 });
 
 export default mongoose.model<IMeTooStory>('MeTooStory', meTooStorySchema);
+

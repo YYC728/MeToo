@@ -91,3 +91,4 @@ export const resendVerificationEmail = async (req: Request, res: Response): Prom
     });
   }
 };
+

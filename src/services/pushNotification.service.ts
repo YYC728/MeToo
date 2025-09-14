@@ -256,3 +256,4 @@ class PushNotificationService {
 }
 
 export default new PushNotificationService();
+

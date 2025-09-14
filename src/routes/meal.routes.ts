@@ -118,3 +118,4 @@ router.get('/:id', optionalAuth, mealIdValidation, getMealById);
 router.patch('/:id/availability', authenticate, mealIdValidation, updateMealAvailability);
 
 export default router;
+

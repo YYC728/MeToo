@@ -164,3 +164,4 @@ describe('POST /api/auth/resend-verification', () => {
     expect(response.body.message).toBe('Validation failed');
   });
 });
+

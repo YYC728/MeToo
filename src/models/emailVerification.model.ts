@@ -38,3 +38,4 @@ emailVerificationTokenSchema.index({ user_id: 1 });
 emailVerificationTokenSchema.index({ expires_at: 1 }, { expireAfterSeconds: 0 }); // TTL index
 
 export default mongoose.model<IEmailVerificationToken>('EmailVerificationToken', emailVerificationTokenSchema);
+

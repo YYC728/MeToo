@@ -134,3 +134,4 @@ mealPostSchema.index({ availability_dates: 1, is_available: 1 });
 mealPostSchema.index({ pickup_time_window: 1, is_available: 1 });
 
 export default mongoose.model<IMealPost>('MealPost', mealPostSchema);
+
