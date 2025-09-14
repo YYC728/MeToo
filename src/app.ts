@@ -24,6 +24,22 @@ app.use('/api/meals', mealRoutes);
 app.use('/api/stories', storyRoutes);
 app.use('/api/upload', uploadRoutes);
 
+// Root route
+app.get('/', (req, res) => {
+  res.status(200).json({
+    message: 'University Meal Exchange & #MeToo Story Sharing App',
+    status: 'running',
+    version: '1.0.0',
+    endpoints: {
+      health: '/health',
+      auth: '/api/auth',
+      meals: '/api/meals',
+      stories: '/api/stories',
+      upload: '/api/upload'
+    }
+  });
+});
+
 // Health check route
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
