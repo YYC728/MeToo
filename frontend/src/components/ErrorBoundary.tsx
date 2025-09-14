@@ -29,7 +29,15 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
       return (
         <div style={{ padding: 32, textAlign: 'center' }}>
           <h2>Something went wrong.</h2>
-          <pre>{this.state.error?.message}</pre>
+          <pre style={{ color: 'red', whiteSpace: 'pre-wrap' }}>
+            {this.state.error?.message}
+            {this.state.error?.stack && (
+              <>
+                {'\n'}Stack Trace:{'\n'}
+                {this.state.error.stack}
+              </>
+            )}
+          </pre>
         </div>
       );
     }
