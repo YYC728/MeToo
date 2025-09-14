@@ -41,7 +41,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
 
     // Send verification email
     try {
-      await emailService.sendUserVerificationEmail(user._id.toString(), user.university_email);
+      await emailService.sendUserVerificationEmail((user._id as any).toString(), user.university_email);
     } catch (emailError) {
       console.error('Failed to send verification email:', emailError);
       // Don't fail registration if email sending fails
@@ -54,8 +54,8 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       university_email: user.university_email,
       is_email_verified: user.is_email_verified,
       disclosure_preferences: user.disclosure_preferences,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt
+      createdAt: (user as any).createdAt,
+      updatedAt: (user as any).updatedAt
     };
 
     res.status(201).json({

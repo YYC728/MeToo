@@ -8,7 +8,7 @@ import { validationResult } from 'express-validator';
  * Create a new story
  * POST /api/stories
  */
-export const createStory = async (req: AuthRequest, res: Response): Promise<void> => {
+export const createStory = async (req: any, res: Response): Promise<void> => {
   try {
     // Check for validation errors
     const errors = validationResult(req);
@@ -59,7 +59,7 @@ export const createStory = async (req: AuthRequest, res: Response): Promise<void
  * Get a single story by ID
  * GET /api/stories/:id
  */
-export const getStoryById = async (req: AuthRequest, res: Response): Promise<void> => {
+export const getStoryById = async (req: any, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
 
@@ -116,7 +116,7 @@ export const getStoryById = async (req: AuthRequest, res: Response): Promise<voi
  * Get all stories with filtering
  * GET /api/stories
  */
-export const getStories = async (req: AuthRequest, res: Response): Promise<void> => {
+export const getStories = async (req: any, res: Response): Promise<void> => {
   try {
     const {
       privacy_level,
@@ -199,7 +199,7 @@ export const getStories = async (req: AuthRequest, res: Response): Promise<void>
  * Add a comment to a story
  * POST /api/stories/:id/comments
  */
-export const addComment = async (req: AuthRequest, res: Response): Promise<void> => {
+export const addComment = async (req: any, res: Response): Promise<void> => {
   try {
     // Check for validation errors
     const errors = validationResult(req);
@@ -271,7 +271,7 @@ export const addComment = async (req: AuthRequest, res: Response): Promise<void>
  * Get comments for a story
  * GET /api/stories/:id/comments
  */
-export const getStoryComments = async (req: AuthRequest, res: Response): Promise<void> => {
+export const getStoryComments = async (req: any, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
 

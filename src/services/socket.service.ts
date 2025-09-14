@@ -1,4 +1,4 @@
-import { Server as SocketIOServer } from 'socket.io';
+import { Server as SocketIOServer, Socket } from 'socket.io';
 import { Server as HTTPServer } from 'http';
 import jwt from 'jsonwebtoken';
 import User from '../models/user.model';
@@ -26,7 +26,7 @@ export class SocketService {
 
   private setupMiddleware() {
     // Authentication middleware
-    this.io.use(async (socket: AuthenticatedSocket, next) => {
+    this.io.use(async (socket: any, next) => {
       try {
         const token = socket.handshake.auth.token;
         
@@ -34,9 +34,12 @@ export class SocketService {
           return next(new Error('Authentication error: No token provided'));
         }
 
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as { userId: string };
-        const user = await User.findById(decoded.userId).select('-password');
-
+        // Verify JWT token
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret') as any;
+        
+        // Find user in database
+        const user = await User.findById(decoded.userId);
+        
         if (!user) {
           return next(new Error('Authentication error: User not found'));
         }
@@ -45,7 +48,7 @@ export class SocketService {
           return next(new Error('Authentication error: Email not verified'));
         }
 
-        socket.userId = user._id.toString();
+        socket.userId = (user._id as any).toString();
         socket.user = user;
         next();
       } catch (error) {
@@ -55,7 +58,7 @@ export class SocketService {
   }
 
   private setupEventHandlers() {
-    this.io.on('connection', (socket: AuthenticatedSocket) => {
+    this.io.on('connection', (socket: any) => {
       console.log(`User ${socket.userId} connected`);
 
       // Join user's personal room
@@ -79,36 +82,36 @@ export class SocketService {
           }
 
           // Check if users have blocked each other
-          if (sender.blocked_users.includes(receiver_id) || 
-              receiver.blocked_users.includes(socket.userId)) {
+          if ((sender.blocked_users as any).includes(receiver_id) || 
+              (receiver.blocked_users as any).includes(socket.userId)) {
             socket.emit('error', { message: 'Cannot send message to this user' });
             return;
           }
 
-          // Create and save message
+          // Create message in database
           const message = new Message({
             sender_id: socket.userId,
             receiver_id,
             content,
+            timestamp: new Date()
           });
 
           await message.save();
 
-          // Emit message to receiver
+          // Emit message to receiver if they're online
           this.io.to(receiver_id).emit('newMessage', {
-            _id: message._id,
-            sender_id: message.sender_id,
-            receiver_id: message.receiver_id,
-            content: message.content,
-            created_at: message.created_at,
+            id: message._id,
+            sender_id: socket.userId,
+            content,
+            timestamp: (message as any).timestamp
           });
 
-          // Confirm to sender
+          // Confirm message sent to sender
           socket.emit('messageSent', {
-            _id: message._id,
-            receiver_id: message.receiver_id,
-            content: message.content,
-            created_at: message.created_at,
+            id: message._id,
+            receiver_id,
+            content,
+            timestamp: (message as any).timestamp
           });
 
         } catch (error) {
@@ -124,10 +127,15 @@ export class SocketService {
     });
   }
 
-  public getIO(): SocketIOServer {
-    return this.io;
+  // Method to send notification to specific user
+  public sendNotificationToUser(userId: string, notification: any) {
+    this.io.to(userId).emit('notification', notification);
+  }
+
+  // Method to broadcast to all users
+  public broadcastToAll(event: string, data: any) {
+    this.io.emit(event, data);
   }
 }
 
 export default SocketService;
-

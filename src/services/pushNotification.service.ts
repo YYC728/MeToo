@@ -75,19 +75,19 @@ class PushNotificationService {
       }
 
       const user = await User.findById(userId).select('fcm_tokens');
-      if (!user || !user.fcm_tokens || user.fcm_tokens.length === 0) {
+      if (!user || !(user as any).fcm_tokens || (user as any).fcm_tokens.length === 0) {
         console.log(`No FCM tokens found for user ${userId}`);
         return false;
       }
 
-      const promises = user.fcm_tokens.map((token: string) => 
+      const promises = (user as any).fcm_tokens.map((token: string) => 
         this.sendToToken(token, notification)
       );
 
       const results = await Promise.allSettled(promises);
-      const successCount = results.filter(result => result.status === 'fulfilled').length;
+      const successCount = results.filter((result: any) => result.status === 'fulfilled').length;
       
-      console.log(`Sent notification to ${successCount}/${user.fcm_tokens.length} devices for user ${userId}`);
+      console.log(`Sent notification to ${successCount}/${(user as any).fcm_tokens.length} devices for user ${userId}`);
       return successCount > 0;
     } catch (error) {
       console.error('Error sending push notification to user:', error);
@@ -115,7 +115,7 @@ class PushNotificationService {
   async sendToAllUsers(notification: PushNotificationData): Promise<number> {
     try {
       const users = await User.find({ fcm_tokens: { $exists: true, $ne: [] } }).select('_id');
-      const userIds = users.map(user => user._id.toString());
+      const userIds = users.map(user => (user._id as any).toString());
       return await this.sendToUsers(userIds, notification);
     } catch (error) {
       console.error('Error sending push notification to all users:', error);
@@ -160,8 +160,8 @@ class PushNotificationService {
       console.error('Error sending push notification to token:', error);
       
       // If token is invalid, remove it from user's tokens
-      if (error.code === 'messaging/invalid-registration-token' || 
-          error.code === 'messaging/registration-token-not-registered') {
+      if ((error as any).code === 'messaging/invalid-registration-token' ||
+          (error as any).code === 'messaging/registration-token-not-registered') {
         await this.removeInvalidToken(token);
       }
       

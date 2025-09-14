@@ -77,7 +77,7 @@ export const resendVerificationEmail = async (req: Request, res: Response): Prom
     }
 
     // Send verification email
-    await emailService.sendUserVerificationEmail(user._id.toString(), user.university_email);
+    await emailService.sendUserVerificationEmail((user._id as any).toString(), user.university_email);
 
     res.status(200).json({
       success: true,

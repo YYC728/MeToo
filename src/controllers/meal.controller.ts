@@ -7,7 +7,7 @@ import { validationResult } from 'express-validator';
  * Create a new meal post
  * POST /api/meals
  */
-export const createMealPost = async (req: AuthRequest, res: Response): Promise<void> => {
+export const createMealPost = async (req: any, res: Response): Promise<void> => {
   try {
     // Check for validation errors
     const errors = validationResult(req);
@@ -99,7 +99,7 @@ export const createMealPost = async (req: AuthRequest, res: Response): Promise<v
  * Get meals with filtering options
  * GET /api/meals
  */
-export const getMeals = async (req: AuthRequest, res: Response): Promise<void> => {
+export const getMeals = async (req: any, res: Response): Promise<void> => {
   try {
     const {
       dietary_group,
@@ -205,7 +205,7 @@ export const getMeals = async (req: AuthRequest, res: Response): Promise<void> =
  * Get a single meal by ID
  * GET /api/meals/:id
  */
-export const getMealById = async (req: AuthRequest, res: Response): Promise<void> => {
+export const getMealById = async (req: any, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
 
@@ -251,7 +251,7 @@ export const getMealById = async (req: AuthRequest, res: Response): Promise<void
  * Update meal availability
  * PATCH /api/meals/:id/availability
  */
-export const updateMealAvailability = async (req: AuthRequest, res: Response): Promise<void> => {
+export const updateMealAvailability = async (req: any, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
     const { is_available } = req.body;
