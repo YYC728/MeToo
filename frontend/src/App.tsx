@@ -25,6 +25,7 @@ const theme = createTheme({
 });
 
 function App() {
+  console.log('REACT_APP_API_URL:', process.env.REACT_APP_API_URL);
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
