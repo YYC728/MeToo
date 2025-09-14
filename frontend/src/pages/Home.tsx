@@ -22,6 +22,17 @@ import { useAuth } from '../contexts/AuthContext';
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [apiError, setApiError] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    // Simple API health check
+    fetch(process.env.REACT_APP_API_URL + '/health')
+      .then(res => {
+        if (!res.ok) throw new Error('API not reachable');
+        return res.json();
+      })
+      .catch(() => setApiError('Unable to connect to backend API. Some features may be unavailable.'));
+  }, []);
 
   const features = [
     {
@@ -56,6 +67,11 @@ const Home: React.FC = () => {
 
   return (
     <Box>
+      {apiError && (
+        <Box sx={{ bgcolor: 'error.main', color: 'white', p: 2, mb: 2, textAlign: 'center' }}>
+          {apiError}
+        </Box>
+      )}
       {/* Hero Section */}
       <Paper
         sx={{
